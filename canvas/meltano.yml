@@ -1,0 +1,55 @@
+version: 1
+send_anonymous_usage_stats: true
+project_id: tap-canvas
+plugins:
+  extractors:
+  - name: tap-canvas
+    namespace: tap_canvas
+    pip_url: git+https://github.com/mwcooley99/tap-canvas.git
+    capabilities:
+    - state
+    - catalog
+    - discover
+    config:
+      course_ends_after: '2021-08-01T00:00:00Z'
+      api_key: $CANVAS_API_KEY
+    select:
+    - enrollment_terms.*
+    - courses.*
+    - outcome_results.*
+    - enrollments.*
+    - users.*
+    - sections.*
+  - name: tap-google-sheets
+    config:
+      client_id: ${SHEETS_CLIENT}
+      client_secret: ${SHEETS_SECRET}
+      refresh_token: ${SHEETS_REFRESH_TOKEN}
+      spreadsheet_id: 1m4i2MuV7u8hacQSuYm25Ox-ucVdLiTPDEGG5rXMvXmc
+      start_date: '2021-12-12'
+    select:
+    - All Students.*
+  loaders:
+  - name: target-postgres
+    variant: transferwise
+    config:
+      host: $DATABASE_HOST
+      port: 5432
+      user: $DATABASE_USER
+      password: $DATABASE_PASSWORD
+      dbname: $DATABASE_NAME
+      default_target_schema: raw_canvas
+      add_metadata_columns: true
+  orchestrators:
+  - name: airflow
+    pip_url: apache-airflow[postgres]==2.1.2 --constraint https://raw.githubusercontent.com/apache/airflow/constraints-2.1.2/constraints-${MELTANO__PYTHON_VERSION}.txt
+  files:
+  - name: airflow
+    pip_url: git+https://gitlab.com/meltano/files-airflow.git
+schedules:
+- name: canvas-sync
+  extractor: tap-canvas
+  loader: target-postgres
+  transform: skip
+  interval: '@daily'
+  start_date: 2022-01-09 21:12:53.815533
