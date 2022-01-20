@@ -1,0 +1,57 @@
+version: "3.7"
+
+x-airflow-shared: &airflow-shared
+  volumes:
+   - ./meltano/meltano.yml:/project/meltano.yml
+   - ./meltano/orchestrate:/project/orchestrate
+   - ./envar_shim.sh:/envar_shim.sh
+   - ./meltano/meltano_run.py:/meltano/meltano_run.py
+   - ./meltano/.meltano/run/airflow/logs:/project/.meltano/run/airflow/logs
+  environment:
+    - DATABASE_URL=postgres://TheDoctor:secret@meltano-db:5432/dtech_airflow
+    - AIRFLOW__CORE__FERNET_KEY=bP5F_GqGwCV7z9VfL-aivL8sj-ys0EzL6w2uhr5YhVQ=
+    - HEROKU_POSTGRESQL_GRAY_URL=postgres://TheDoctor:secret@cbl-lti-app-db-1:5432/cbldb
+    - CANVAS_API_KEY=${CANVAS_API_KEY}
+    - PORT=8080
+  networks:
+    - cbl
+    - default
+services:
+  airflow-scheduler:
+    <<: *airflow-shared
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: python /meltano/meltano_run.py start_scheduler 
+    restart: unless-stopped
+    depends_on:
+      - meltano-db
+  airflow-webserver:
+    <<: *airflow-shared
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: python /meltano/meltano_run.py start_webserver
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    depends_on:
+      - meltano-db
+  meltano-db:
+    image: postgres
+    restart: always
+    ports:
+      - "55432:5432"
+    environment:
+      - POSTGRES_USER=TheDoctor
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - db:/var/lib/postgresql/data/pgdata
+
+volumes:
+  db:
+networks:
+  cbl:
+    name: cbl-lti-app_default

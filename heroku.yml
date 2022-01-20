@@ -1,0 +1,7 @@
+build:
+  docker:
+    web: Dockerfile
+    scheduler: Dockerfile
+run:
+  web: python meltano_run.py start_webserver
+  scheduler: python meltano_run.py start_scheduler

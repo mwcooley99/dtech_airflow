@@ -1,4 +1,4 @@
-tags
 .env
 .meltano
 .python-version
+.venv/

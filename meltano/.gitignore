@@ -1,0 +1,7 @@
+.venv
+.meltano/
+.env
+*.pyc
+tasks
+pyrightconfig.json
+orchestrate/logs

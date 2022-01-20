@@ -1,0 +1,33 @@
+version: '3.8'
+
+x-meltano-image: &meltano-image
+  image: meltano/meltano
+  volumes:
+    - .:/project
+
+services:
+  meltano-ui:
+    <<: *meltano-image
+    command: ui
+    expose:
+      - 5000
+    ports:
+      - 5000:5000
+    restart: unless-stopped
+
+  # # Uncomment if you are using the Airflow orchestrator, delete otherwise
+  # airflow-scheduler:
+  #   <<: *meltano-image
+  #   command: invoke airflow scheduler
+  #   expose:
+  #     - 8793
+  #   restart: unless-stopped
+  #
+  # airflow-webserver:
+  #   <<: *meltano-image
+  #   command: invoke airflow webserver
+  #   expose:
+  #     - 8080
+  #   ports:
+  #     - 8080:8080
+  #   restart: unless-stopped

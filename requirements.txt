@@ -1,1 +1,2 @@
 meltano==1.90.1
+click
