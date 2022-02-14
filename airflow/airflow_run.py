@@ -13,8 +13,15 @@ def set_env():
     os.environ['CBL_APP_DATABASE_PASSWORD'] = parsed_url.password
     os.environ['CBL_APP_DATABASE_NAME'] = parsed_url.path.lstrip('/')
 
+    # run command
 
 if __name__ == '__main__':
     set_env()
     command = sys.argv[1:]
-    subprocess.run(command)
+    if command[0] == "start_webserver":
+        subprocess.run("cd /opt/airflow && poetry run airflow webserver --port $PORT" , shell=True)
+    elif command[0] == "start_scheduler":
+        subprocess.run("cd /opt/airflow && poetry run airflow scheduler", shell=True)
+    else:
+        subprocess.run(command, shell=True)
+        

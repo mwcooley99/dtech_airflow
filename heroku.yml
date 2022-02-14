@@ -3,5 +3,5 @@ build:
     web: Dockerfile
     scheduler: Dockerfile
 run:
-  web: python meltano_run.py start_webserver
-  scheduler: python meltano_run.py start_scheduler
+  web: airflow webserver --port $PORT
+  scheduler: airflow scheduler

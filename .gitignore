@@ -2,3 +2,7 @@
 .meltano
 .python-version
 .venv/
+
+**/__pycache__/**
+logs/
+airflow-webserver.pid

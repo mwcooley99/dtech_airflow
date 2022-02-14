@@ -5,7 +5,7 @@ description = ""
 authors = ["Matt <mwcooley99@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "3.7.12"
+python = "3.8.12"
 meltano = "1.93.0"
 
 [tool.poetry.dev-dependencies]

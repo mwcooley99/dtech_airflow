@@ -1,26 +1,41 @@
-ARG MELTANO_IMAGE=meltano/meltano:latest
-FROM $MELTANO_IMAGE
+FROM python:3.8.12-slim
+ENV AIRFLOW_HOME=/opt/airflow
 
-WORKDIR /project
+# add users home directory to the path
+ENV PATH=/home/devuser/.local/bin:${PATH}
+RUN apt-get update && apt-get install -y \
+    git \
+    gcc \
+    libpq-dev \
+    build-essential
 
-# Install any additional requirements
-# COPY ./requirements.txt . 
-# RUN pip install -r requirements.txt
+# Add user
+RUN groupadd -g 5000 devuser && \
+    useradd -g 5000 -d /home/devuser -u 5000 -m devuser
 
-# Install all plugins into the `.meltano` directory
-COPY ./meltano/meltano.yml /project/meltano.yml 
-RUN meltano install
+USER devuser
 
-# Pin `discovery.yml` manifest by copying cached version to project root
-RUN cp -n .meltano/cache/discovery.yml . 2>/dev/null || :
+# Install airflow in the global python dist
+ARG AIRFLOW_VERSION=2.2.3
+ARG PYTHON_VERSION=3.8
+ARG CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-3.8.txt"
+RUN pip install --user "apache-airflow[postgres]==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}"
 
-# Don't allow changes to containerized project files
-# ENV MELTANO_PROJECT_READONLY 1
+# Install poetry
+RUN python3 -m pip install --user pipx
+RUN python3 -m pipx ensurepath
+RUN pipx install poetry 
 
-# Copy over remaining project files
-COPY ./meltano/orchestrate /project/orchestrate
-COPY ./envar_shim.sh /envar_shim.sh
-COPY ./meltano/meltano_run.py /project/meltano_run.py
+# Copy file
+COPY --chown=devuser:devuser ./envar_shim.sh /envar_shim.sh
+COPY --chown=devuser:devuser airflow /opt/airflow
+COPY --chown=devuser:devuser meltano /opt/meltano
 
-ENTRYPOINT ["/envar_shim.sh"]
-CMD ["start.sh"]
+
+# Set up meltano poetry environment
+RUN cd /opt/meltano && poetry install
+RUN cd /opt/meltano && poetry run meltano install
+
+
+WORKDIR /home/devuser
+ENTRYPOINT [ "/envar_shim.sh" ]
