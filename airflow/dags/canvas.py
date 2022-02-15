@@ -17,8 +17,8 @@ with DAG(dag_id="canvas_sync", start_date=days_ago(1), schedule_interval="@daily
     start_time = get_start_time()
     canvas_data_pull = BashOperator(
             task_id="meltano_canvas",
-            # TODO: Consider adding the db url here (with an env var of course).
-            bash_command="meltano elt tap-canvas target-postgres --job_id=canvas-to-app",
+            do_xcom_push=True,
+            bash_command="python /opt/meltano/meltano_run.py poetry run meltano elt tap-canvas target-postgres --job_id=canvas-to-app --select=terms",
             )
 
     delete_cleanup = PostgresOperator(

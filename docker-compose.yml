@@ -2,10 +2,10 @@ version: "3.7"
 
 x-airflow-shared: &airflow-shared
   volumes:
-   - ./meltano/meltano.yml:/project/meltano.yml
+   - ./meltano/meltano.yml:/opt/meltano/meltano.yml
    - ./meltano/orchestrate:/project/orchestrate
    - ./envar_shim.sh:/envar_shim.sh
-   - ./meltano/meltano_run.py:/meltano/meltano_run.py
+   - ./meltano/meltano_run.py:/opt/meltano/meltano_run.py
    - ./airflow:/opt/airflow
   environment:
     - DATABASE_URL=postgres://TheDoctor:secret@meltano-db:5432/dtech_airflow
@@ -22,7 +22,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: python /opt/airflow/meltano_run.py start_scheduler 
+    command: python /opt/airflow/airflow_run.py start_scheduler 
     restart: unless-stopped
     depends_on:
       - meltano-db
@@ -31,7 +31,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: python /opt/airflow/meltano_run.py start_webserver
+    command: python /opt/airflow/airflow_run.py start_webserver
     ports:
       - 8080:8080
     restart: unless-stopped

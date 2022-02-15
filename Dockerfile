@@ -5,7 +5,10 @@ ENV AIRFLOW_HOME=/opt/airflow
 ENV PATH=/home/devuser/.local/bin:${PATH}
 RUN apt-get update && apt-get install -y \
     git \
-    gcc
+    gcc \
+    libpq-dev \
+    build-essential
+
 # Add user
 RUN groupadd -g 5000 devuser && \
     useradd -g 5000 -d /home/devuser -u 5000 -m devuser
