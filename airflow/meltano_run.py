@@ -19,9 +19,9 @@ if __name__ == '__main__':
     set_env()
     command = sys.argv[1:]
     if command[0] == "start_webserver":
-        subprocess.run("meltano invoke airflow webserver --port $PORT" , shell=True)
+        subprocess.run("cd /opt/airflow && poetry run airflow webserver --port $PORT" , shell=True)
     elif command[0] == "start_scheduler":
-        subprocess.run("meltano invoke airflow scheduler", shell=True)
+        subprocess.run("cd /opt/airflow && poetry run airflow scheduler", shell=True)
     else:
         subprocess.run(command)
         

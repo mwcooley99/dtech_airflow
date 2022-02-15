@@ -6,7 +6,7 @@ x-airflow-shared: &airflow-shared
    - ./meltano/orchestrate:/project/orchestrate
    - ./envar_shim.sh:/envar_shim.sh
    - ./meltano/meltano_run.py:/meltano/meltano_run.py
-   - ./meltano/.meltano/run/airflow/logs:/project/.meltano/run/airflow/logs
+   - ./airflow:/opt/airflow
   environment:
     - DATABASE_URL=postgres://TheDoctor:secret@meltano-db:5432/dtech_airflow
     - AIRFLOW__CORE__FERNET_KEY=bP5F_GqGwCV7z9VfL-aivL8sj-ys0EzL6w2uhr5YhVQ=
@@ -22,7 +22,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: python /meltano/meltano_run.py start_scheduler 
+    command: python /opt/airflow/meltano_run.py start_scheduler 
     restart: unless-stopped
     depends_on:
       - meltano-db
@@ -31,7 +31,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: python /meltano/meltano_run.py start_webserver
+    command: python /opt/airflow/meltano_run.py start_webserver
     ports:
       - 8080:8080
     restart: unless-stopped
