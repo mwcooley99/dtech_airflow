@@ -16,11 +16,16 @@ def get_start_time():
 with DAG(dag_id="canvas_sync", start_date=days_ago(1), schedule_interval="@daily", catchup=False, concurrency=1) as dag:
     start_time = get_start_time()
     canvas_data_pull = BashOperator(
+            # TODO: decide if updating db env is worth the extra python script.
             task_id="meltano_canvas",
-            do_xcom_push=True,
-            bash_command="python /opt/meltano/meltano_run.py poetry run meltano elt tap-canvas target-postgres --job_id=canvas-to-app --select=terms",
+            bash_command="""
+                cd /opt/meltano
+                unset VIRTUAL_ENV
+                poetry run python meltano_run.py meltano elt tap-canvas target-postgres --select=terms
+            """
             )
 
+    # TODO: make this a soft-delete
     delete_cleanup = PostgresOperator(
             task_id="delete_cleanup",
             postgres_conn_id="cbl_app_database_url",
