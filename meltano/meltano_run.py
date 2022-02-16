@@ -13,13 +13,8 @@ def set_env():
     os.environ['CBL_APP_DATABASE_PASSWORD'] = parsed_url.password
     os.environ['CBL_APP_DATABASE_NAME'] = parsed_url.path.lstrip('/')
 
-    # os.environ.pop('VIRTUAL_ENV', None)
-
-    # run command
 
 if __name__ == '__main__':
     set_env()
-    # TODO: combine the two *_run.py files into one and move to /opt/bin
     command = sys.argv[1:]
-    command_str = ' '.join(command)
-    subprocess.run(command)    
+    subprocess.run(command)

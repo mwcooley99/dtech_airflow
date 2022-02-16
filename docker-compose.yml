@@ -22,7 +22,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: python /opt/airflow/airflow_run.py start_scheduler 
+    command: airflow scheduler
     restart: unless-stopped
     depends_on:
       - meltano-db
@@ -31,7 +31,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: python /opt/airflow/airflow_run.py start_webserver
+    command: airflow webserver --port $PORT
     ports:
       - 8080:8080
     restart: unless-stopped
