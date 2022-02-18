@@ -12,19 +12,20 @@ RUN apt-get update && apt-get install -y \
 # Add user
 RUN groupadd -g 5000 devuser && \
     useradd -g 5000 -d /home/devuser -u 5000 -m devuser
-
 USER devuser
 
 # Install airflow in the global python dist
 ARG AIRFLOW_VERSION=2.2.3
 ARG PYTHON_VERSION=3.8
 ARG CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-3.8.txt"
-RUN pip install --user "apache-airflow[postgres]==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}"
+RUN python -m pip install --upgrade pip
+RUN pip install --user "apache-airflow[postgres]==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}" \
+    pipx
 
 # Install poetry
-RUN python3 -m pip install --user pipx
+# RUN python3 -m pip install --user pipx
 RUN python3 -m pipx ensurepath
-RUN pipx install poetry 
+RUN pipx install --force poetry 
 
 # Copy file
 COPY --chown=devuser:devuser ./envar_shim.sh /envar_shim.sh
