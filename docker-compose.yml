@@ -7,6 +7,7 @@ x-airflow-shared: &airflow-shared
    - ./envar_shim.sh:/envar_shim.sh
    - ./meltano/meltano_run.py:/opt/meltano/meltano_run.py
    - ./airflow:/opt/airflow
+   - ./meltano/logging_config.yaml:/opt/meltano/logging_config.yaml
   environment:
     - DATABASE_URL=postgres://TheDoctor:secret@meltano-db:5432/dtech_airflow
     - AIRFLOW__CORE__FERNET_KEY=bP5F_GqGwCV7z9VfL-aivL8sj-ys0EzL6w2uhr5YhVQ=

@@ -13,13 +13,13 @@ from airflow.operators.python import PythonOperator
 def get_start_time():
     return {"date": datetime.now().strftime("%Y-%m-%dT%H:%M:%S")}
 
-with DAG(dag_id="canvas_sync", start_date=days_ago(1), schedule_interval="@daily", catchup=False, concurrency=1) as dag:
+with DAG(dag_id="canvas_sync", start_date=days_ago(1), schedule_interval="@daily", catchup=False, concurrency=1, max_active_runs=1) as dag:
     start_time = get_start_time()
     canvas_data_pull = BashOperator(
             task_id="meltano_canvas",
             bash_command="""
                 cd /opt/meltano
-                poetry run python meltano_run.py meltano elt tap-canvas target-postgres
+                poetry run python meltano_run.py meltano elt tap-canvas target-postgres --select=terms
             """
             )
 
@@ -29,12 +29,12 @@ with DAG(dag_id="canvas_sync", start_date=days_ago(1), schedule_interval="@daily
             postgres_conn_id="cbl_app_database_url",
             sql="""
                 -- Must add each canvas table that has "hard deletes"
-                delete from raw_canvas.terms where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}';
-                delete from raw_canvas.outcome_results where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}';
-                delete from raw_canvas.courses where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}';
-                delete from raw_canvas.enrollments where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}';
-                delete from raw_canvas.sections where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}';
-                delete from raw_canvas.users where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}';
+                update raw_canvas.terms set _sdc_deleted_at = now() where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}' and _sdc_deleted_at is null;
+                update raw_canvas.assignments set _sdc_deleted_at = now() where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}' and _sdc_deleted_at is null;
+                update raw_canvas.courses set _sdc_deleted_at = now() where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}' and _sdc_deleted_at is null;
+                update raw_canvas.enrollments set _sdc_deleted_at = now() where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}' and _sdc_deleted_at is null;
+                update raw_canvas.outcome_results set _sdc_deleted_at = now() where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}' and _sdc_deleted_at is null;
+                update raw_canvas.sections set _sdc_deleted_at = now() where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}' and _sdc_deleted_at is null;
             """
         )
     start_time >> canvas_data_pull >> delete_cleanup

@@ -12,6 +12,10 @@ LOGGING_CONFIG = {
         'airflow': {
             'format': LOG_FORMAT
         },
+        'airflow_json': {
+            'class': 'pythonjsonlogger.jsonlogger.JsonFormatter',
+            'format': '%(asctime)s %(name)s %(levelname)s %(message)s'
+        }
     },
     'filters': {
         'mask_secrets': {
@@ -45,7 +49,7 @@ LOGGING_CONFIG = {
         },
         'airflow.task': {
             'handlers': ['task'],
-            'level': LOG_LEVEL,
+            'level': "INFO",
             'propagate': False,
             'filters': ['mask_secrets']
         },

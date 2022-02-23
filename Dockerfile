@@ -21,6 +21,7 @@ ARG CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints
 RUN python -m pip install --upgrade pip
 RUN pip install --user "apache-airflow[postgres]==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}" \
     pipx
+RUN pip install --user python-json-logger
 
 # Install poetry
 # RUN python3 -m pip install --user pipx
