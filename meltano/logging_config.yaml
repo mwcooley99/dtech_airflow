@@ -20,14 +20,24 @@ handlers:
   console:
     class: logging.StreamHandler
     level: INFO
-    formatter: json
+    formatter: default
+    stream: "ext://sys.stderr"
+  console_json:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: structured_colored
     stream: "ext://sys.stderr"
   # file:
   #   class: logging.FileHandler
   #   level: INFO
   #   filename: /var/log/meltano.log
   #   formatter: json
-
+loggers:
+  airflow:
+    processor:
+      handlers: [console_json]
+      level: INFO
+      propogate: False
 root:
   level: DEBUG
   propagate: yes
