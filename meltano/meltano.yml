@@ -11,7 +11,7 @@ plugins:
     - catalog
     - discover
     config:
-      course_ends_after: '2021-08-01T00:00:00Z'
+      course_ends_after: ${CANVAS_COURSE_ENDS_AFTER:-'2021-08-01T00:00:00Z'}
       api_key: $CANVAS_API_KEY
     select:
     - terms.*

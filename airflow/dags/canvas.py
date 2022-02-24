@@ -28,14 +28,6 @@ with DAG(dag_id="canvas_sync", start_date=days_ago(1), schedule_interval="@daily
     delete_cleanup = PostgresOperator(
         task_id="delete_cleanup",
         postgres_conn_id="cbl_app_database_url",
-        sql="""
-                -- Must add each canvas table that has "hard deletes"
-                update raw_canvas.terms set _sdc_deleted_at = now() where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}' and _sdc_deleted_at is null;
-                update raw_canvas.assignments set _sdc_deleted_at = now() where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}' and _sdc_deleted_at is null;
-                update raw_canvas.courses set _sdc_deleted_at = now() where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}' and _sdc_deleted_at is null;
-                update raw_canvas.enrollments set _sdc_deleted_at = now() where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}' and _sdc_deleted_at is null;
-                update raw_canvas.outcome_results set _sdc_deleted_at = now() where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}' and _sdc_deleted_at is null;
-                update raw_canvas.sections set _sdc_deleted_at = now() where _sdc_batched_at <= '{{ ti.xcom_pull(task_ids="start_time")["date"] }}' and _sdc_deleted_at is null;
-            """
+        sql="sql/canvas_cleanup.sql"
     )
     start_time >> canvas_data_pull >> delete_cleanup

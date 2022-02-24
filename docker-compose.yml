@@ -15,6 +15,7 @@ x-airflow-shared: &airflow-shared
     - CANVAS_API_KEY=${CANVAS_API_KEY}
     - PORT=8080
     - MELTANO_CLI_LOG_CONFIG=/opt/meltano/logging_config.yaml
+    - CANVAS_COURSE_ENDS_AFTER='2022-01-01T00:00:00Z'
   networks:
     - cbl
     - default
