@@ -14,7 +14,7 @@ x-airflow-shared: &airflow-shared
     - HEROKU_POSTGRESQL_GRAY_URL=postgres://TheDoctor:secret@cbl-lti-app-db-1:5432/cbldb
     - CANVAS_API_KEY=${CANVAS_API_KEY}
     - PORT=8080
-    - MELTANO_CLI_LOG_CONFIG=/opt/meltano/logging_config.yaml
+    - CANVAS_COURSE_ENDS_AFTER=2021-08-06T00:00:00Z
   networks:
     - cbl
     - default

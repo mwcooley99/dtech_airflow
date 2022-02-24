@@ -36,7 +36,7 @@ COPY --chown=devuser:devuser meltano /opt/meltano
 
 # Set up meltano poetry environment
 RUN cd /opt/meltano && poetry install
-RUN cd /opt/meltano && poetry run meltano install
+RUN cd /opt/meltano && poetry run meltano install --clean
 
 
 WORKDIR /home/devuser
