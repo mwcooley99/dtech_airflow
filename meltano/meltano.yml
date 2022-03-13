@@ -42,13 +42,3 @@ plugins:
       dbname: $CBL_APP_DATABASE_NAME
       default_target_schema: raw_canvas
       add_metadata_columns: true
-  orchestrators:
-  - name: airflow
-    pip_url: apache-airflow[postgres]==2.1.2 --constraint https://raw.githubusercontent.com/apache/airflow/constraints-2.1.2/constraints-${MELTANO__PYTHON_VERSION}.txt
-    config:
-      core:
-        executor: LocalExecutor
-        sql_alchemy_conn: ${DATABASE_URL}
-  files:
-  - name: airflow
-    pip_url: git+https://gitlab.com/meltano/files-airflow.git

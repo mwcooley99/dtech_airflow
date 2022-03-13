@@ -19,7 +19,7 @@ ARG AIRFLOW_VERSION=2.2.3
 ARG PYTHON_VERSION=3.8
 ARG CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-3.8.txt"
 RUN python -m pip install --upgrade pip
-RUN pip install --user "apache-airflow[postgres]==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}" \
+RUN pip install --user "apache-airflow[postgres, pandas]==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}" \
     pipx
 RUN pip install --user python-json-logger
 
