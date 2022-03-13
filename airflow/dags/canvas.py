@@ -13,7 +13,6 @@ from airflow.operators.python import PythonOperator
 def get_start_time():
     return {"date": datetime.now().strftime("%Y-%m-%dT%H:%M:%S")}
 
-
 with DAG(dag_id="canvas_sync", start_date=days_ago(1), schedule_interval="@daily", catchup=False, concurrency=1, max_active_runs=1) as dag:
     start_time = get_start_time()
     canvas_data_pull = BashOperator(
@@ -24,7 +23,6 @@ with DAG(dag_id="canvas_sync", start_date=days_ago(1), schedule_interval="@daily
             """
     )
 
-    # TODO: make this a soft-delete
     delete_cleanup = PostgresOperator(
         task_id="delete_cleanup",
         postgres_conn_id="cbl_app_database_url",
