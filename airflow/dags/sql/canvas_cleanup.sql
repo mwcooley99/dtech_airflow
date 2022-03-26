@@ -17,3 +17,20 @@ create index if not exists ix_enrollment_id on raw_canvas.courses (enrollment_te
 create index if not exists ix_course_id_user_id on raw_canvas.enrollments (course_id, user_id);
 create index if not exists ix_outcome_results_course_id on raw_canvas.outcome_results (course_id);
 create index if not exists ix_outcome_results_user_id on raw_canvas.outcome_results (user_id);
+
+
+-- Add grades table TODO: move to alembic or similar
+
+create table if not exists raw_canvas.grades (
+    course_id integer,
+    user_id integer,
+    grade text,
+    threshold numeric(3,2),
+    min_score numeric(3,2),
+    primary key (course_id, user_id)
+);
+
+-- indices -------------------------------------------------------
+
+create index if not exists ix_grades_course_id on raw_canvas.grades(course_id int4_ops);
+

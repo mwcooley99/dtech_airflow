@@ -28,7 +28,7 @@ plugins:
       client_secret: ${SHEETS_SECRET}
       refresh_token: ${SHEETS_REFRESH_TOKEN}
       spreadsheet_id: 1m4i2MuV7u8hacQSuYm25Ox-ucVdLiTPDEGG5rXMvXmc
-      start_date: '2021-12-12'
+      course_ends_after: '2021-12-12'
     select:
     - All Students.*
   loaders:
