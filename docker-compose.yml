@@ -11,7 +11,7 @@ x-airflow-shared: &airflow-shared
   environment:
     - DATABASE_URL=postgres://TheDoctor:secret@meltano-db:5432/dtech_airflow
     - AIRFLOW__CORE__FERNET_KEY=bP5F_GqGwCV7z9VfL-aivL8sj-ys0EzL6w2uhr5YhVQ=
-    - HEROKU_POSTGRESQL_GRAY_URL=postgres://TheDoctor:secret@cbl-lti-app-db-1:5432/cbldb
+    - HEROKU_POSTGRESQL_GRAY_URL=postgres://TheDoctor:secret@cbl-lti-app-db-1:5432/dtech_airflow
     - CANVAS_API_KEY=${CANVAS_API_KEY}
     - PORT=8080
     - CANVAS_COURSE_ENDS_AFTER=2021-08-06T00:00:00Z
@@ -23,7 +23,7 @@ services:
     <<: *airflow-shared
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./Dockerfile.scheduler
     command: airflow scheduler
     restart: unless-stopped
     depends_on:
@@ -32,7 +32,7 @@ services:
     <<: *airflow-shared
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./Dockerfile.web
     command: airflow webserver --port $PORT
     ports:
       - 8080:8080

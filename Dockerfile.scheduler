@@ -41,3 +41,4 @@ RUN cd /opt/meltano && poetry run meltano install --clean
 
 WORKDIR /home/devuser
 ENTRYPOINT [ "/envar_shim.sh" ]
+CMD ["airflow", "scheduler"]
