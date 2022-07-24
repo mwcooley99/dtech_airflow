@@ -23,6 +23,9 @@ jobs:
           docker build --target webserver -f Dockerfile -t cooley/airflow-web:lastest .
           docker tag docker.io/cooley/airflow-web:lastest registry.heroku.com/dtech-airflow/web
     - run:
+        command: 'heroku container:login'
+        name: Login to Heroku Docker image registry
+    - run:
         name: "Push Images"
         command: |
           docker push registry.heroku.com/dtech-airflow/scheduler
@@ -38,8 +41,8 @@ jobs:
         version: 20.10.14
         docker_layer_caching: true
     - run:
-        name: "Login to Heroku"
-        command: heroku login
+        command: 'heroku container:login'
+        name: Login to Heroku Docker image registry
     - run: 
         name: "Push"
         command: heroku container:release web scheduler
