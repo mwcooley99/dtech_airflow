@@ -11,9 +11,9 @@ jobs:
     steps:
     - heroku/install
     - checkout
-    # - setup_remote_docker:
-    #     version: 20.10.14
-    #     docker_layer_caching: true
+    - setup_remote_docker:
+        version: 20.10.14
+        docker_layer_caching: true
     - run:
         name: "Build Images"
         command: |
@@ -34,9 +34,9 @@ jobs:
     steps:
     - heroku/install
     - checkout
-    # - setup_remote_docker:
-    #     version: 20.10.14
-    #     docker_layer_caching: true
+    - setup_remote_docker:
+        version: 20.10.14
+        docker_layer_caching: true
     - run:
         name: "Login to Heroku"
         command: heroku login
