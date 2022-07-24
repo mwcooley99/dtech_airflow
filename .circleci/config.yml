@@ -9,6 +9,7 @@ jobs:
     # docker:
     #   - image: cimg/python:3.10.5
     steps:
+    - heroku/install
     - run:
         name: "Login to Heroku"
         command: heroku login
