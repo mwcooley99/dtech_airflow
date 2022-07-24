@@ -28,8 +28,6 @@ jobs:
   release:
     docker:
       - image: cimg/python:3.10.5
-    requires:
-      - build-and-push
     steps:
     - checkout
     - setup_remote_docker:
@@ -44,4 +42,6 @@ workflows:
   heroku-deploy:
     jobs:
      - build-and-push
-     - release
+     - release:
+        requires:
+          - build-and-push
