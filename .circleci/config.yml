@@ -28,8 +28,7 @@ jobs:
     - save_cache:
         key: v1-deps-{{ checksum "poetry.lock" }}
         paths:
-          - ./meltano
-          - ./airflow
+          - ~/.cache/pypoetry/virtualenvs
     - run:
         command: 'heroku container:login'
         name: Login to Heroku Docker image registry
