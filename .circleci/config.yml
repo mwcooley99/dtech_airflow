@@ -26,22 +26,27 @@ jobs:
           docker push registry.heroku.com/dtech-airflow/scheduler
           docker push registry.heroku.com/dtech-airflow/web
   release:
-    docker:
-      - image: cimg/python:3.10.5
+    # docker:
+    #   - image: cimg/python:3.10.5
+    # steps:
+    # - checkout
+    # - setup_remote_docker:
+    #     version: 20.10.14
+    #     docker_layer_caching: true
+    executor: heroku/default
     steps:
-    - checkout
-    - setup_remote_docker:
-        version: 20.10.14
-        docker_layer_caching: true
+      - checkout
+      - heroku/install
+      - heroku/release-docker-image:
+          process-types: web scheduler
 
-    - run:
-        name: "Release Application"
-        command: heroku container:release web scheduler
+        
+
 
 workflows:
   heroku-deploy:
     jobs:
-     - build-and-push
-     - release:
-        requires:
-          - build-and-push
+    #  - build-and-push
+     - release
+        # requires:
+        #   - build-and-push
