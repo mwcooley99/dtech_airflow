@@ -10,13 +10,10 @@ jobs:
     #   - image: cimg/python:3.10.5
     steps:
     - heroku/install
-    - run:
-        name: "Login to Heroku"
-        command: heroku login
     - checkout
-    - setup_remote_docker:
-        version: 20.10.14
-        docker_layer_caching: true
+    # - setup_remote_docker:
+    #     version: 20.10.14
+    #     docker_layer_caching: true
     - run:
         name: "Build Images"
         command: |
@@ -31,13 +28,15 @@ jobs:
           docker push registry.heroku.com/dtech-airflow/scheduler
           docker push registry.heroku.com/dtech-airflow/web
   release:
-    docker:
-      - image: cimg/python:3.10.5
+    executor: heroku/default
+    # docker:
+    #   - image: cimg/python:3.10.5
     steps:
+    - heroku/install
     - checkout
-    - setup_remote_docker:
-        version: 20.10.14
-        docker_layer_caching: true
+    # - setup_remote_docker:
+    #     version: 20.10.14
+    #     docker_layer_caching: true
     - run:
         name: "Login to Heroku"
         command: heroku login
