@@ -5,8 +5,9 @@ orbs:
 
 jobs:
   build-and-push:
-    docker:
-      - image: cimg/python:3.10.5
+    executor: heroku/default
+    # docker:
+    #   - image: cimg/python:3.10.5
     steps:
     - run:
         name: "Login to Heroku"
