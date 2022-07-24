@@ -17,4 +17,4 @@ def set_env():
 if __name__ == '__main__':
     set_env()
     command = sys.argv[1:]
-    subprocess.run(command)
+    subprocess.run(command, check=True)
