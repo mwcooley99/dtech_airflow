@@ -10,10 +10,13 @@ jobs:
     #   - image: cimg/python:3.10.5
     steps:
     - heroku/install
-    - checkout
     - setup_remote_docker:
         version: 20.10.14
         docker_layer_caching: true
+    - checkout
+    - restore_cache:
+        name: Restore Deps Cache
+        key: v1-deps-{{ checksum "poetry.lock" }}
     - run:
         name: "Build Images"
         command: |
@@ -22,6 +25,11 @@ jobs:
 
           docker build --target webserver -f Dockerfile -t cooley/airflow-web:lastest .
           docker tag docker.io/cooley/airflow-web:lastest registry.heroku.com/dtech-airflow/web
+    - save_cache:
+        key: v1-deps-{{ checksum "poetry.lock" }}
+        paths:
+          - ./meltano
+          - ./airflow
     - run:
         command: 'heroku container:login'
         name: Login to Heroku Docker image registry
@@ -45,7 +53,7 @@ jobs:
         name: Login to Heroku Docker image registry
     - run: 
         name: "Push"
-        command: heroku container:release web scheduler
+        command: heroku container:release -a dtech_airflow web scheduler
     # executor: heroku/default
     # steps:
     #   - checkout
