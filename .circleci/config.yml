@@ -16,9 +16,6 @@ jobs:
     - checkout
     - run:
         command: ls -a ~/project/meltano
-    - restore_cache:
-        keys: 
-          - v1-deps-{{ checksum "poetry.lock" }}
     - run:
         name: "Build Images"
         command: |
@@ -27,10 +24,6 @@ jobs:
 
           docker build --target webserver -f Dockerfile -t cooley/airflow-web:lastest .
           docker tag docker.io/cooley/airflow-web:lastest registry.heroku.com/dtech-airflow/web
-    - save_cache:
-        key: v1-deps-{{ checksum "poetry.lock" }}
-        paths:
-          - ~/project/meltano/poetry.lock
     - run:
         command: 'heroku container:login'
         name: Login to Heroku Docker image registry
@@ -54,7 +47,7 @@ jobs:
         name: Login to Heroku Docker image registry
     - run: 
         name: "Push"
-        command: heroku container:release -a dtech_airflow web scheduler
+        command: heroku container:release -a dtech-airflow web scheduler
     # executor: heroku/default
     # steps:
     #   - checkout
