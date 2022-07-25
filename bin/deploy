@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+if [[ $# -ne 1 ]] | [[ $1 != "stage" ]]
+then
+    echo "Must be stage"
+    exit 1
+fi
+
+if ! git diff-index --quiet HEAD --
+then 
+    echo "thee are uncomitted changes"
+    exit 1
+fi
+
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+echo $current_branch
+if [[ $current_branch = HEAD ]]
+then
+    echo "you can't do that"
+    exit 1
+fi
+
+env=$1
+
+echo "This will force push HEAD to the $env branch which triggers a deplyment to the $env environment"
+echo "Do you wish to move forward. Type yes to proceed"
+read line
+if [[ $line != yes ]]
+then 
+    echo "Aborting"
+    exit 1
+fi
+
+git branch -f $env
+git checkout $env
+git push --force-with-lease origin $env
+git checkout $current_branch
