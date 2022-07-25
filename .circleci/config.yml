@@ -6,8 +6,6 @@ orbs:
 jobs:
   build-and-push:
     executor: heroku/default
-    # docker:
-    #   - image: cimg/python:3.10.5
     steps:
     - heroku/install
     - setup_remote_docker:
@@ -34,8 +32,6 @@ jobs:
           docker push registry.heroku.com/dtech-airflow/web
   release:
     executor: heroku/default
-    # docker:
-    #   - image: cimg/python:3.10.5
     steps:
     - heroku/install
     - checkout
@@ -48,15 +44,6 @@ jobs:
     - run: 
         name: "Push"
         command: heroku container:release -a dtech-airflow web scheduler
-    # executor: heroku/default
-    # steps:
-    #   - checkout
-    #   - heroku/install
-    #   - heroku/release-docker-image:
-    #       process-types: web scheduler
-
-        
-
 
 workflows:
   heroku-deploy:
