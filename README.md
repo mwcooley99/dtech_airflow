@@ -19,3 +19,34 @@ heroku container:release web scheduler
 - [ ] Additionally consider moving back to the meltano Docker image...not sure it's worth it...but might be worth considering.
 - [x] Confirm that the meltano installs aren't cached in a way that I don't want. In particular, I'm a little concerned it's not noticing changes to the taps. **This is just the push is using cached layers I think**
 - [ ] Clean up all the extra mess in the meltano directory
+
+# Getting Started
+
+1. Create database
+
+    ```bash
+    docker compose up -d meltano-db
+    ```
+
+1. Create the meltano schema in the database
+
+    ```sql
+    create schema meltano;
+    ```
+
+1. create the airflow metadata tables
+
+    ```bash
+    airflow db init
+    ```
+
+1. create the airflow admin user (values below are for dev only)
+
+    ```bash
+    airflow users create \
+        --username admin \
+        --firstname Peter \
+        --lastname Parker \
+        --role Admin \
+        --email spiderman@superhero.org
+    ```
